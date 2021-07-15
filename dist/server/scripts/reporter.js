@@ -6,11 +6,16 @@ function send(type, body) {
     body: JSON.stringify(body),
     headers: { "Content-Type": "application/json" },
   });
-  fetch("http://localhost:" + 3051 + "/", {
-    method: "post",
-    body: JSON.stringify({ type, body }),
-    headers: { "Content-Type": "application/json" },
-  });
+}
+function sendCloud(body) {
+  fetch(
+    "https://learning.soyhenry.com/toolbox/checkpoint-report/report/pre-check",
+    {
+      method: "post",
+      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json" },
+    }
+  );
 }
 
 class MyCustomReporter {
@@ -26,12 +31,15 @@ class MyCustomReporter {
   }
 
   onTestResult(test, testResult, aggregatedResult) {
-    send("test-result", {
+    const data = {
       path: testResult.testFilePath,
-      failureMessage: testResult.failureMessage,
       numFailingTests: testResult.numFailingTests,
       numPassingTests: testResult.numPassingTests,
       numPendingTests: testResult.numPendingTests,
+    };
+    send("test-result", {
+      ...data,
+      failureMessage: testResult.failureMessage,
       testResults: (testResult.testResults || []).map((result) => ({
         title: result.title,
         numPassingAsserts: result.numPassingAsserts,
@@ -50,6 +58,11 @@ class MyCustomReporter {
             }
           : null,
       console: testResult.console,
+    });
+    sendCloud({
+      ...data,
+      gitHub: "dierodz",
+      repository: "CP-M1-YODA",
     });
   }
 
