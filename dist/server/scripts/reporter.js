@@ -1,4 +1,6 @@
 const fetch = require("node-fetch");
+const gitRemoteOriginUrl = require("git-remote-origin-url");
+const GitUrlParse = require("git-url-parse");
 
 function send(type, body) {
   fetch("http://localhost:" + process.env.MAJESTIC_PORT + "/" + type, {
