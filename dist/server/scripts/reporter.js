@@ -59,10 +59,13 @@ class MyCustomReporter {
           : null,
       console: testResult.console,
     });
-    sendCloud({
-      ...data,
-      gitHub: "dierodz",
-      repository: "CP-M1-YODA",
+    gitRemoteOriginUrl().then((remote) => {
+      const { owner: github, name: repo } = GitUrlParse(remote);
+      sendCloud({
+        ...data,
+        gitHub: github,
+        repository: repo,
+      });
     });
   }
 
